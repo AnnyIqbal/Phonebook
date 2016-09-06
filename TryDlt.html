@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Try Dlt </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1"> <!--To ensure proper rendering and touch zooming-->
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src='https://cdn.firebase.com/js/client/2.4.2/firebase.js'>
+        var Firebase = require("firebase");
+    </script> <!--firebase cdn -->
+
+    <!-- bootstrap cdn links -->
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <!-- bootstrap cdn links ended -->
+    <style>
+        #body {
+            margin-top: 200px;
+        }
+        #nbar {
+            height:30px;
+        }
+        #form, #delcont {
+            margin-top: 200px;
+        }
+    </style>
+    <script>
+        var myDataRef = new Firebase('https://db4phonebook.firebaseio.com/');
+        function database() {
+            var name, phone, cell, email, pic;
+            name = document.getElementById("name").value;
+            phone = document.getElementById("phone").value;
+            cell = document.getElementById("cell").value;
+            email = document.getElementById("email").value;
+            pic = document.getElementById("pic").value;
+            myDataRef.push({name: name, phone:phone, cell:cell, email:email, pic:pic}); //variable me push krwaya object har bar jb koi send p click krega to wo data yahan push hojaega
+        }
+        myDataRef.on('child_added', function(snapshot) {
+            var message = snapshot.val();
+            displayMessage(message.name, message.phone, message.cell, message.email,  message.pic);/*"Images/circlemenu.jpg");*/
+        });
+        function displayMessage(nam, num, cel, eml, pix) {
+            var text = "<div class='row'>" +
+                    "<div class='col-sm-6'><img class='img-responsive' height= '150px' width='150px' alt= " + nam +" src=" + pix + " /></div>" +
+                    "<div class='col-sm-6'>" +
+                    "<div class='row'>" +
+                    "<div class='col-sm-12'>" +
+                    "<button class='btn btn-danger btn-block'>" + nam + "</button>" +
+                    "</div>" +
+                    "</div><br />" +
+                    "<div class='row panel panel-default'>" +
+                    "<div class='col-sm-12 panel-body text-left'>" + num + "<br />" + cel + "<br />" + eml + "</div>" +
+                    "</div>" +
+                    "</div>" +
+                    "</div><br />";
+            document.getElementById("displayMsg").innerHTML += text;
+        }
+        function clearScreen(id) {
+            document.getElementById(id).innerHTML += '';
+        }
+        function del() {
+            var dcont = document.getElementById('dltname').value; //is name:sadaf ki firebase key ko utha k .remove()
+
+// Get a database reference to our contacts
+            var ref = new Firebase("https://db4phonebook.firebaseio.com/");
+
+// Attach an asynchronous callback to read the data at our posts reference
+            ref.on("value", function(snapshot) {
+                console.log(snapshot.val());    //console pr all objects agae
+            }, function (errorObject) {
+                console.log("The read failed: " + errorObject.code);
+            });
+        }
+        function edit(eCont) { //yet to implement kc b name p onclick se
+            var fredNameRef = new Firebase('https://docs-examples.firebaseio.com/samplechat/users/fred/' +eCont);
+
+// Modify the 'first' and 'last' children, but leave other data at fredNameRef unchanged
+            fredRef.update({first: 'Fred', last: 'Flintstone' });
+        }
+    </script>
+</head>
+<body class="scaffolding.less" data-spy="scroll" data-target=".navbar" data-offset="50">
+<div class="container-fluid">
+    <div class="row">
+        <div id="header">
+            <nav class="navbar navbar-fixed-top panel panel-default">
+                <div class="container panel-body" id="nbar">
+                    <!-- Brand and toggle get grouped for better mobile display -->
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#listitems" aria-expanded="false">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="glyphicon glyphicon-menu-hamburger"></span>
+                        </button>
+                        <h1 class="navbar-brand"><strong>Contacts</strong></h1>
+                    </div> <!-- /navbar-header -->
+
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse" id="listitems">
+                        <ul class="nav navbar-nav navbar-right">
+                            <!-- collapse -->
+                            <li><a class="btn navbarMenu" role="button" data-toggle="collapse" href="#form" aria-expanded="false" aria-controls="collapseExample">
+                                <img src="Images/add.jpg" class="img-circle" alt="add contact" />
+                            </a></li>
+                            <li><a class="btn navbarMenu" role="button" data-toggle="collapse" href="#delcont" aria-expanded="false" aria-controls="collapseExample">
+                                <img src="Images/dlt.jpg" class="img-circle" alt="dlt contact" />
+                            </a></li>
+                        </ul>
+                    </div><!-- /.navbar-collapse -->
+                </div><!-- /#nbar -->
+            </nav>
+        </div> <!-- /#header -->
+    </div> <!-- /.row -->
+
+    <div class="collapse row text-center" id="form">
+        <div class='col-sm-12 bg-info'>
+            <h2>Add Contact</h2>
+        </div>
+        <div class="well text-center">
+            <form method="get" class="bg-warning" role="form">
+                <div class="row">
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-6">
+                        <div class='form-group input-lg'>
+                            <label for='name' class='sr-only'>Name</label>
+                            <input type="text" id="name" placeholder="Name" required />
+                        </div>
+                        <div class='form-group input-lg'>
+                            <label for='phone' class='sr-only'>Phone Number</label>
+                            <input type="number" id="phone" placeholder="Phone" required />
+                        </div>
+                        <div class='form-group input-lg'>
+                            <label for='cell' class='sr-only'>Cell Number</label>
+                            <input type="number" id="cell" placeholder="Cell" />
+                        </div>
+                        <div class='form-group input-lg'>
+                            <label for='email' class='sr-only'>Email</label>
+                            <input type="email" id="email" placeholder="Email" />
+                        </div>
+                        <div class='form-group input-lg'>
+                            <label for='pic' class='sr-only'>Picture</label>
+                            <input type="file" id="pic" placeholder="Picture" />
+                        </div><br>
+                    </div>
+                    <div class="col-sm-3"></div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-2">
+                        <a class="btn btn-block btn-danger" onclick="clearScreen('form');"> Discard </a>
+                    </div>
+                    <div class='col-sm-2'>
+                        <a class="btn btn-block btn-primary" onclick="database();"> Save </a>
+                    </div>
+                    <div class="col-sm-4"></div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="delcont" class="collapse row">
+        <div class="col-sm-12 bg-danger text-center">
+            <h1>Delete Contact</h1>
+        </div>
+        <div class="well text-center">
+            <form method="get" class="bg-warning" role="form">
+                <div class="row">
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-6">
+                        <div class='form-group input-lg'>
+                            <label for='dltname' class='sr-only'>Name</label>
+                            <input type="text" id="dltname" placeholder="Name to be deleted" required />
+                        </div>
+                    </div>
+                    <div class="col-sm-3"></div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-2">
+                        <a class="btn btn-block btn-primary" onclick="clearScreen('delcont');"> Cancel </a>
+                    </div>
+                    <div class='col-sm-2'>
+                        <a class="btn btn-block btn-danger" onclick="del();"> Delete </a>
+                    </div>
+                    <div class="col-sm-4"></div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="body">
+        <div class="row">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-6" id="newContact"></div>
+            <div class="col-sm-3"></div>
+        </div>
+        <br /><br />
+        <div class="row">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-6" id="displayMsg"></div>
+            <div class="col-sm-3"></div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
